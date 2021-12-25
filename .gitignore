@@ -3,4 +3,6 @@ __pycache__
 venv
 *.py[cod]
 *$py.class
-requests_cache.sqlite
+requests_cache.sqlite*
+*.csv
+*.csv#
