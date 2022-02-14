@@ -157,7 +157,7 @@ def search_content(cls: FunctionUnit):
 
 
 def end_parsing(cls: FunctionUnit):
-    global requests
+    pass
 
 
 def main():
