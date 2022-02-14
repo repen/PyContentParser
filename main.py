@@ -13,11 +13,34 @@ from tool import log
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from typing import Any, List
+import argparse
+import os
+from datetime import datetime
+
+parser = argparse.ArgumentParser(
+    formatter_class=argparse.RawTextHelpFormatter,
+    description='Running the application.'
+)
+
+parser.add_argument('-l', '--log', dest='log', type=str, default="",
+                    help='An example:\npython main.py -l out.log')
+parser.add_argument('-d', '--debug', dest='debug', action="store_true", default=False,
+                    help='-d or --debug mode')
 
 
-logger = log(__name__)
+args = parser.parse_args()
+
+if args.log:
+    logger = log(__name__, args.log)
+else:
+    logger = log(__name__)
+
 BASE_URL = ""
-
+DEBUG = args.debug
+REPORT_PATH = os.path.join(os.getcwd(), datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p") + ".csv")
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0"
+}
 
 @dataclass
 class IData:
@@ -53,6 +76,7 @@ class Requests:
         def __init__(self, url, status_code):
             self.url = url
             self.status_code = status_code
+            self.type_url = None
 
     _response_list: List[Response] = []
     COUNT = 0
@@ -63,13 +87,14 @@ class Requests:
         url = args[0]
         try:
             res = _requests.get(*args, **kwargs)
+            Requests._response_list.append(self.Response(url, res.status_code))
             if res.status_code == 200:
-                Requests._response_list.append( self.Response(url, res.status_code) )
                 logger.info(f"Response [{res.status_code}] {url}")
             else:
                 logger.warning(f"Status code: {res.status_code} {url}")
                 raise BadStatusCode(f"Bad status code: {res.status_code}")
         except _requests.exceptions.ConnectionError:
+            Requests._response_list.append(self.Response(url, 900))
             logger.warning(f"Connection Error {url}")
             raise ConnectionError(f"Problem with {url} ")
 
@@ -80,12 +105,17 @@ class Requests:
         pass
 
     def __del__(self):
+        logger.info(self.requests_report())
+
+    def requests_report(self):
         """Вывод статистики по парсингу"""
         status200 = list(filter(lambda x: x.status_code == 200, self._response_list))
+        statusBad = list(filter(lambda x: x.status_code != 200, self._response_list))
         string = f"\n===== requests result =====\n" \
                  f"<urls: {Requests.COUNT}>\n" \
-                 f"<status_200: {len(status200)}>\n"
-        logger.info(string)
+                 f"<Good: {len(status200)}>\n" \
+                 f"<Bad:  {len(statusBad)}>\n"
+        return string
 
 
 requests = Requests()
@@ -128,7 +158,6 @@ def search_content(cls: FunctionUnit):
 
 def end_parsing(cls: FunctionUnit):
     global requests
-    del requests
 
 
 def main():
@@ -143,3 +172,5 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         logger.debug("\n >>> Stop. CTRL+C")
+    finally:
+        del requests
