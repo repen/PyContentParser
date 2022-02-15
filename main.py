@@ -1,22 +1,8 @@
 """
-Copyright (c) 2021 Plugin Andrey (9keepa@gmail.com)
+Copyright (c) 2022 Plugin Andrey (9keepa@gmail.com)
 Licensed under the MIT License
 """
-
-import requests as _requests
-import requests_cache
-# Кешируем запросы
-CACHE = True
-if CACHE:
-    requests_cache.install_cache('requests_cache')
-from tool import log
-from bs4 import BeautifulSoup
-from dataclasses import dataclass
-from typing import Any, List
 import argparse
-import os
-from datetime import datetime
-
 parser = argparse.ArgumentParser(
     formatter_class=argparse.RawTextHelpFormatter,
     description='Running the application.'
@@ -26,9 +12,25 @@ parser.add_argument('-l', '--log', dest='log', type=str, default="",
                     help='An example:\npython main.py -l out.log')
 parser.add_argument('-d', '--debug', dest='debug', action="store_true", default=False,
                     help='-d or --debug mode')
-
+parser.add_argument('-cc', '--cache', dest='cache', action="store_true", default=False,
+                    help='-cc or --cache')
 
 args = parser.parse_args()
+
+import requests as _requests
+import requests_cache
+# Кешируем запросы
+CACHE = args.cache
+if CACHE:
+    requests_cache.install_cache('requests_cache')
+from tool import log
+from bs4 import BeautifulSoup
+from dataclasses import dataclass
+from typing import Any, List
+import os
+from datetime import datetime
+
+
 
 if args.log:
     logger = log(__name__, args.log)
