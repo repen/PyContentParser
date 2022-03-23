@@ -2,6 +2,7 @@
 Copyright (c) 2022 Plugin Andrey (9keepa@gmail.com)
 Licensed under the MIT License
 """
+import configparser
 import argparse
 parser = argparse.ArgumentParser(
     formatter_class=argparse.RawTextHelpFormatter,
@@ -16,6 +17,8 @@ parser.add_argument('-cc', '--cache', dest='cache', action="store_true", default
                     help='Use requests cache\n-cc or --cache')
 
 args = parser.parse_args()
+config = configparser.ConfigParser()
+# config.read("config.ini")
 
 import requests as _requests
 import requests_cache
