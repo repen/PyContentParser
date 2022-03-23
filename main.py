@@ -9,11 +9,11 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument('-l', '--log', dest='log', type=str, default="",
-                    help='An example:\npython main.py -l out.log')
+                    help='The log write to file\npython main.py --log out.log')
 parser.add_argument('-d', '--debug', dest='debug', action="store_true", default=False,
-                    help='-d or --debug mode')
+                    help='Debug mode\n-d or --debug')
 parser.add_argument('-cc', '--cache', dest='cache', action="store_true", default=False,
-                    help='-cc or --cache')
+                    help='Use requests cache\n-cc or --cache')
 
 args = parser.parse_args()
 
@@ -29,7 +29,6 @@ from dataclasses import dataclass
 from typing import Any, List
 import os
 from datetime import datetime
-
 
 
 if args.log:
@@ -113,10 +112,11 @@ class Requests:
         """Вывод статистики по парсингу"""
         status200 = list(filter(lambda x: x.status_code == 200, self._response_list))
         statusBad = list(filter(lambda x: x.status_code != 200, self._response_list))
-        string = f"\n===== requests result =====\n" \
-                 f"<urls: {Requests.COUNT}>\n" \
-                 f"<Good: {len(status200)}>\n" \
-                 f"<Bad:  {len(statusBad)}>\n"
+        string = f"\n{'-'*14} requests result {'-'*14}\n" \
+                 f"Urls {Requests.COUNT}\n" \
+                 f"Good {len(status200)}\n" \
+                 f"Bad  {len(statusBad)}\n" \
+                 f"{'-'*50}"
         return string
 
 
