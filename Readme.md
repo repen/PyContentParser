@@ -4,7 +4,7 @@
 
 ### Запуск
 
-`python main.py --cache --debug --log out.log`
+`python main.py`
 
 Параметры запуска:
     
