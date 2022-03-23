@@ -6,3 +6,4 @@ venv
 requests_cache.sqlite*
 *.csv
 *.csv#
+test_script.py

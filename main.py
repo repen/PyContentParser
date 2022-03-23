@@ -116,7 +116,7 @@ class Requests:
                  f"Urls {Requests.COUNT}\n" \
                  f"Good {len(status200)}\n" \
                  f"Bad  {len(statusBad)}\n" \
-                 f"{'-'*50}"
+                 f"{'-'*45}"
         return string
 
 
