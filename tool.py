@@ -3,7 +3,11 @@ Copyright (c) 2022 Plugin Andrey (9keepa@gmail.com)
 Licensed under the MIT License
 """
 
-import logging, hashlib, os, time
+import logging
+import hashlib
+import os
+import time
+import re
 
 def hash_(string):
     return hashlib.sha1(string.encode()).hexdigest()
@@ -51,3 +55,6 @@ def log(name, filename=None):
     # logger.error('error message')
     # logger.critical('critical message')
     return logger
+
+def parsing_config(string) -> tuple:
+    return tuple([re.sub(r"^\/|/$", "", x) for x in re.split(r"(?<!^)(?<!\\)/(?!$)", string)])
