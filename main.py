@@ -18,7 +18,7 @@ parser.add_argument('-cc', '--cache', dest='cache', action="store_true", default
 
 args = parser.parse_args()
 config = configparser.ConfigParser()
-# config.read("config.ini")
+config.read("config.ini")
 
 import requests as _requests
 import requests_cache
@@ -26,7 +26,7 @@ import requests_cache
 CACHE = args.cache
 if CACHE:
     requests_cache.install_cache('requests_cache')
-from tool import log
+from tool import log, Handler
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from typing import Any, List
@@ -137,6 +137,11 @@ class Product:
     def dump_csv(self):
         pass
 
+    @staticmethod
+    def get_soup(html: str) -> BeautifulSoup:
+        soup = BeautifulSoup(html, "html.parser")
+        return soup
+
 
 class FunctionUnit:
     """Функциональный блок"""
@@ -151,13 +156,13 @@ class FunctionUnit:
     def __call__(self, *args, **kwargs):
         self.func(FunctionUnit)
 
-    @staticmethod
-    def get_soup(html: str) -> BeautifulSoup:
-        soup = BeautifulSoup(html, "html.parser")
-        return soup
-
 
 def search_content(cls: FunctionUnit):
+    Handler(config, {
+        "title" : "Xiaomi Redmi K40S",
+        "description" : "Finding the best price for the Xiaomi Redmi K40S is no easy task. Here you will find where to buy the Xiaomi Redmi K40S at the best price. Prices are continuously tracked in over 140 stores so that you can find a reputable dealer with the best price",
+        "brand": "Xiaomi"
+    })
     pass
 
 
