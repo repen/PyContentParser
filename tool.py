@@ -2,20 +2,22 @@
 Copyright (c) 2022 Plugin Andrey (9keepa@gmail.com)
 Licensed under the MIT License
 """
-
+import traceback
 import logging
 import hashlib
 import os
 import time
 import re
 from functools import partial
-from dataclasses import dataclass
+
 
 def hash_(string):
     return hashlib.sha1(string.encode()).hexdigest()
 
+
 def listdir_fullpath(d):
     return [os.path.join(d, f) for f in os.listdir(d)]
+
 
 def timeit(f):
 
@@ -28,6 +30,7 @@ def timeit(f):
         return result
 
     return timed
+
 
 def log(name, filename=None):
     # создаём logger
@@ -58,10 +61,14 @@ def log(name, filename=None):
     # logger.critical('critical message')
     return logger
 
+
 def parsing_config(string) -> tuple:
     return tuple([re.sub(r"^\/|/$", "", x) for x in re.split(r"(?<!^)(?<!\\)/(?!$)", string)])
 
+
 class Handler:
+    """Обработка итоговых данных.
+    """
 
     class Base:
 
@@ -123,4 +130,66 @@ class Handler:
     def value_map(self):
         for func in self.handler_value.get_functions():
             func()
+
+
+class Starter:
+    """Класс для запуска функции с гибкой обработкой ошибок.
+    Класс умеет только запускать функции с уже запрограммированной логикой, а также
+    обрабатывать необходимые ошибки или вовсе пропускать их.
+
+    """
+
+    def __init__(self):
+        self.logger = None
+
+        self.exceptions = list()
+        self.functions = list()
+        self.function_and_exception = list()
+        self.handler_error_functions = list()
+
+    def registration_exception(self, exc):
+        self.exceptions.append(exc)
+
+    def registration_function(self, func):
+        self.functions.append(func)
+
+    def registration_function_and_exception(self, func, exc):
+        self.function_and_exception.append((func, exc))
+
+    def registration_handler_error(self, func):
+        self.handler_error_functions.append(func)
+
+    def handler_error(self, message, trace):
+        """обработка ошибок"""
+        for func in self.handler_error_functions:
+            func(message, trace)
+
+    def handler_multiple_exceptions(self):
+        """Режим мульти обработка. Функция + Список исключений."""
+        for func in self.functions:
+            if self.exceptions:
+                try:
+                    func()
+                except tuple(self.exceptions) as err:
+                    self.handler_error(err, traceback.format_exc())
+            else:
+                func()
+
+        self.functions.clear()
+
+    def handler_individual_exception(self):
+        """Режим одиночная обработка. Функция + Индивидуально исключение."""
+        for item in self.function_and_exception:
+            func = item[0]
+            exception = item[1]
+
+            if exception:
+                try:
+                    func()
+                except exception as err:
+                    self.handler_error(err, traceback.format_exc())
+            else:
+                func()
+
+        self.function_and_exception.clear()
 
