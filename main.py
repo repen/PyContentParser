@@ -158,11 +158,6 @@ class FunctionUnit:
 
 
 def search_content(cls: FunctionUnit):
-    Handler(config, {
-        "title" : "Xiaomi Redmi K40S",
-        "description" : "Finding the best price for the Xiaomi Redmi K40S is no easy task. Here you will find where to buy the Xiaomi Redmi K40S at the best price. Prices are continuously tracked in over 140 stores so that you can find a reputable dealer with the best price",
-        "brand": "Xiaomi"
-    })
     pass
 
 
