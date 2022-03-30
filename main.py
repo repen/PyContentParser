@@ -18,7 +18,7 @@ parser.add_argument('-cc', '--cache', dest='cache', action="store_true", default
 
 args = parser.parse_args()
 config = configparser.ConfigParser()
-config.read("config.ini")
+# config.read("config.ini")
 
 import requests as _requests
 import requests_cache
