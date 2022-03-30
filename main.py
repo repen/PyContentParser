@@ -26,12 +26,13 @@ import requests_cache
 CACHE = args.cache
 if CACHE:
     requests_cache.install_cache('requests_cache')
-from tool import log, Handler
+from tool import log, Handler, Starter
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from typing import Any, List
 import os
 from datetime import datetime
+from functools import partial
 
 
 if args.log:
