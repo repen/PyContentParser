@@ -17,7 +17,8 @@ parser.add_argument('-cc', '--cache', dest='cache', action="store_true", default
                     help='Use requests cache\n-cc or --cache')
 
 args = parser.parse_args()
-config = configparser.ConfigParser()
+# config = configparser.ConfigParser()
+# include config.file
 # config.read("config.ini")
 
 import requests as _requests
@@ -26,13 +27,12 @@ import requests_cache
 CACHE = args.cache
 if CACHE:
     requests_cache.install_cache('requests_cache')
-from tool import log, Handler, Starter
+from tool import log
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any, List, Union
 import os
 from datetime import datetime
-from functools import partial
 
 
 if args.log:
@@ -146,7 +146,7 @@ class Product:
 
 class FunctionUnit:
     """Функциональный блок"""
-    SHARE_DATA:IData = None
+    SHARE_DATA:Union[IData, Any] = None
 
     def __init__(self, func):
         self.func = func
