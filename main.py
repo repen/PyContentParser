@@ -22,10 +22,10 @@ args = parser.parse_args()
 # config.read("config.ini")
 
 import requests as _requests
-import requests_cache
 # Кешируем запросы
 CACHE = args.cache
 if CACHE:
+    import requests_cache
     requests_cache.install_cache('requests_cache')
 from tool import log
 from bs4 import BeautifulSoup
