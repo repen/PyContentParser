@@ -47,11 +47,6 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0"
 }
 
-@dataclass
-class IData:
-    name: str
-    value: Any
-
 
 class BaseParserException(Exception):
     """Базовое исключение"""
@@ -138,6 +133,9 @@ class Product:
     def dump_csv(self):
         pass
 
+    def dump_json(self):
+        pass
+
     @staticmethod
     def get_soup(html: str) -> BeautifulSoup:
         soup = BeautifulSoup(html, "html.parser")
@@ -146,7 +144,7 @@ class Product:
 
 class FunctionUnit:
     """Функциональный блок"""
-    SHARE_DATA:Union[IData, Any] = None
+    SHARE_DATA:Union[Any, None] = None
 
     def __init__(self, func):
         self.func = func
